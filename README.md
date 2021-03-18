@@ -30,3 +30,28 @@ To build the test database run the following command:
 ```
 docker build -t test-db-deployment .
 ```
+## Using the images
+### Deployment Image
+To apply the database changes to a specific environment run the `test-db-deployment` image. It requires three environment variables to be set:
+
+Name | Description
+---|---
+URL | Target database URL
+USERNAME | Username allowing access to the target database
+PASSWORD | Password allowing access to the target database
+
+Bear in mind that neither of these variables have default values, hence if they are not set container will just fail.
+
+For example, you can run the database update using the following docker command (providing thar database host is `db` and database is `testdb`.
+```
+docker run --name database-update -e URL=jdbc:postgresql://db/testdb -e USERNAME=test -e PASSWORD=password test-db-deployment
+```
+
+Container starts, runs the liquibase update and quits. You can check the logs to confirm that update succeeded. Then just remove the container.
+
+### Test Database
+
+To start test database run the following command:
+```
+docker run --name test-database -e POSTGRES_PASSWORD=password -d test-db-deployment
+```
